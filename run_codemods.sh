@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Array of jscodemod scripts (from 1*.js to 7*.js), assuming they are located in the same directory as this script
-scripts=("$SCRIPT_DIR"/1*.js "$SCRIPT_DIR"/2*.js "$SCRIPT_DIR"/3*.js "$SCRIPT_DIR"/4*.js "$SCRIPT_DIR"/5*.js "$SCRIPT_DIR"/6*.js "$SCRIPT_DIR"/7*.js)
+scripts=("$SCRIPT_DIR"/1*.js "$SCRIPT_DIR"/2*.js "$SCRIPT_DIR"/3*.js "$SCRIPT_DIR"/4*.js "$SCRIPT_DIR"/5*.js "$SCRIPT_DIR"/6*.js "$SCRIPT_DIR"/7*.js "$SCRIPT_DIR"/8*.js)
 
 # Loop over each jscodemod script
 for script in "${scripts[@]}"; do
