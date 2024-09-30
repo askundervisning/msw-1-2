@@ -26,6 +26,15 @@ module.exports = function (fileInfo, api) {
         .forEach(path => {
           path.get('object').replace(j.identifier('request'));
         });
+
+        j(functionBody)
+        .find(j.MemberExpression, {
+          object: { name: 'req' },
+          property: { name: 'method' }
+        })
+        .forEach(path => {
+          path.get('object').replace(j.identifier('request'));
+        });
     };
   
     // Helper function to process http.* handlers and replace req.headers/req.url with request.headers/request.url
