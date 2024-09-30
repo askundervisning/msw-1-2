@@ -6,7 +6,10 @@ module.exports = function (fileInfo, api) {
     const httpMethods = ['post', 'patch', 'put', 'get', 'delete'];
     let hasTransformed = false; // Flag to track if we have transformed any code
   
-    // Helper function to replace `res()` call with `HttpResponse.json()` or `HttpResponse.text()` or `HttpResponse.body()`
+    // Helper function to check if a string is a valid JavaScript identifier
+    const isValidIdentifier = (key) => /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(key);
+  
+    // Helper function to replace `res()` call with `HttpResponse.json()`, `HttpResponse.text()`, or `HttpResponse.body()`
     const replaceResWithHttpResponse = (path, responseType, jsonOrTextCall, statusNode, headers) => {
       const initObjectProperties = [];
   
@@ -18,7 +21,14 @@ module.exports = function (fileInfo, api) {
       // Include headers if present
       if (headers.length > 0) {
         const headerObject = j.objectExpression(
-          headers.map(header => j.property('init', j.identifier(header.key), header.value))
+          headers.map(header =>
+            j.property(
+              'init',
+              // Use identifier if valid, otherwise treat as string literal
+              isValidIdentifier(header.key) ? j.identifier(header.key) : j.literal(header.key),
+              header.value
+            )
+          )
         );
         initObjectProperties.push(j.property('init', j.identifier('headers'), headerObject));
       }
@@ -95,7 +105,7 @@ module.exports = function (fileInfo, api) {
                   arg.callee.property.name === 'set'
                 ) {
                   headers.push({
-                    key: arg.arguments[0], // The `key` in `ctx.set(key, value)`
+                    key: arg.arguments[0].value, // The `key` in `ctx.set(key, value)`
                     value: arg.arguments[1], // The `value` in `ctx.set(key, value)`
                   });
                 }
