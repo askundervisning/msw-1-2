@@ -29,7 +29,7 @@ module.exports = function (fileInfo, api) {
   const root = j(fileInfo.source);
 
   // A list of http methods that need to be modified
-  const httpMethods = ["post", "patch", "delete"];
+  const httpMethods = ["post", "patch", "delete","put"];
 
   // Helper function to check if the CallExpression is an http method we care about
   const isHttpMethodCall = (call) => {
@@ -65,8 +65,6 @@ module.exports = function (fileInfo, api) {
             j.tsTypeReference(j.identifier("PathParams")),
             ...callExpression.typeParameters.params,
           ];
-
-          console.log(newGenericParams);
 
           // Replace the original generics with the new one
           callExpression.typeParameters.params = newGenericParams;

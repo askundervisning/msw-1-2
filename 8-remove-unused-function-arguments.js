@@ -2,7 +2,7 @@ module.exports = function (fileInfo, api) {
     const j = api.jscodeshift;
     const root = j(fileInfo.source);
   
-    // Helper function to check if a destructured property is used in the function body
+    // Helper function to check if a destructured variable is used in a function body
     const isDestructuredPropertyUsed = (propertyName, functionPath) => {
       let isUsed = false;
   
@@ -26,7 +26,7 @@ module.exports = function (fileInfo, api) {
       const params = functionPath.node.params;
   
       // Iterate over the function's parameters
-      params.forEach(param => {
+      functionPath.node.params = params.filter(param => {
         if (param.type === 'ObjectPattern') {
           // We're dealing with destructured parameters (e.g., { request, params })
           const usedProperties = param.properties.filter(property => {
@@ -41,7 +41,13 @@ module.exports = function (fileInfo, api) {
   
           // Update the ObjectPattern with only used properties
           param.properties = usedProperties;
+  
+          // If the object is empty after removing unused properties, return false to remove it
+          return param.properties.length > 0;
         }
+  
+        // For non-object-pattern parameters, just return true to keep them
+        return true;
       });
     };
   
